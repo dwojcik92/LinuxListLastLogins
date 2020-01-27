@@ -1,0 +1,18 @@
+#!/usr/bin/python
+import subprocess
+
+
+# get all logins
+logins = subprocess.check_output('journalctl -q  _TRANSPORT=audit | grep "unix_chkpwd"', shell=True)
+logins = logins.splitlines()
+l = []
+for login in logins:
+    login = str(login.decode())
+    login = login.split(sep=' ')
+    l.append(login)
+logins = l
+
+for i,l in enumerate(logins):
+    if("msg='op=PAM:unix_chkpwd" in l):
+        login = l[0]+' '+l[1]+' '+l[2]+' '+l[12][6:-1]
+        print(login)
